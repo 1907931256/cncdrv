@@ -1,15 +1,27 @@
 ;/*++
 ;
-;    INF file for a CNC PCI device.
+;Copyright (c) Microsoft Corporation.  All rights reserved.
+;
+;   THIS CODE AND INFORMATION IS PROVIDED "AS IS" WITHOUT WARRANTY OF ANY
+;   KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+;   IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A PARTICULAR
+;   PURPOSE.
+;
+;Module Name:
+;
+;    GenPCI.INF
+;
+;Abstract:
+;    INF file for a generic PCI device.
 ;
 ;--*/
 
 [Version]
 Signature      = "$WINDOWS NT$"
 Class          = CNC
-ClassGuid      = {cdcc4662-6c7a-4095-81a5-846bec26afca}
+ClassGuid      = {78A1C341-4539-11d3-B88D-00C04FAD5171}
 Provider       = %MSFT%
-DriverVer      = 05/17/2014,5.00.4000
+DriverVer      = 05/18/2014,5.00.4000
 CatalogFile    = KmdfCNC.cat
 
 [DestinationDirs]
@@ -46,13 +58,13 @@ pcidrv.sys     = 1
 [MSFT]
 ; DisplayName            Section           DeviceId
 ; -----------            -------           --------
-%GenPCI.DRVDESC%=GenPCI_Inst, PCI\VEN_10ee&DEV_0300
+%GenPCI.DRVDESC%=GenPCI_Inst, PCI\VEN_10EE&DEV_0300
 
 ; For XP and later
 [MSFT.NT$ARCH$]
 ; DisplayName            Section           DeviceId
 ; -----------            -------           --------
-%GenPCI.DRVDESC%=GenPCI_Inst, PCI\VEN_10ee&DEV_0300
+%GenPCI.DRVDESC%=GenPCI_Inst, PCI\VEN_10EE&DEV_0300
 
 [GenPCI_Inst.NT]
 CopyFiles      = GenPCI.CopyFiles
@@ -103,8 +115,8 @@ KmdfLibraryVersion = $KMDFVERSION$
 
 [Strings]
 MSFT           = "vkorehov"
-ClassName      = "CNC"
-GenPCI.SVCDESC = "CNC PCI Device Driver Service for Intel 8255x Ethernet Controller"
-GenPCI.DRVDESC = "CNC PCI Driver for Intel 8255x Ethernet Controller"
-DISK_NAME      = "CNC PCI Install Disk"
+ClassName      = "CNC Device"
+GenPCI.SVCDESC = "CNC PCI Driver Service"
+GenPCI.DRVDESC = "CNC PCI Driver"
+DISK_NAME      = "CNC Install Disk"
 
