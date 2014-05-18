@@ -1,0 +1,110 @@
+;/*++
+;
+;    INF file for a CNC PCI device.
+;
+;--*/
+
+[Version]
+Signature      = "$WINDOWS NT$"
+Class          = CNC
+ClassGuid      = {cdcc4662-6c7a-4095-81a5-846bec26afca}
+Provider       = %MSFT%
+DriverVer      = 05/17/2014,5.00.4000
+CatalogFile    = KmdfCNC.cat
+
+[DestinationDirs]
+DefaultDestDir  = 12
+
+;-------------------------------------------------------------------------
+; Class Section
+;-------------------------------------------------------------------------
+[ClassInstall32]
+Addreg         = CNCClassReg
+
+[CNCClassReg]
+HKR,,,0,%ClassName%
+HKR,,Icon,,-5
+HKR,,DeviceCharacteristics,0x10001,0x100     ;Use same security checks on relative opens
+HKR,,Security,,"D:P(A;;GA;;;SY)(A;;GA;;;BA)" ;Allow generic all access to system and built-in Admin.
+
+;-------------------------------------------------------------------------
+; Device Install Section
+;-------------------------------------------------------------------------
+[ControlFlags]
+ExcludeFromSelect = *
+
+[Manufacturer]
+%MSFT%=MSFT,NT$ARCH$
+
+[SourceDisksFiles]
+pcidrv.sys     = 1
+
+[SourceDisksNames]
+1=%DISK_NAME%,
+
+; For Win2K
+[MSFT]
+; DisplayName            Section           DeviceId
+; -----------            -------           --------
+%GenPCI.DRVDESC%=GenPCI_Inst, PCI\VEN_10ee&DEV_0300
+
+; For XP and later
+[MSFT.NT$ARCH$]
+; DisplayName            Section           DeviceId
+; -----------            -------           --------
+%GenPCI.DRVDESC%=GenPCI_Inst, PCI\VEN_10ee&DEV_0300
+
+[GenPCI_Inst.NT]
+CopyFiles      = GenPCI.CopyFiles
+
+
+[GenPCI.CopyFiles]
+pcidrv.sys
+
+
+[GenPCI_Inst.NT.Services]
+AddService     = GenPCI,0x00000002,GenPCI_Service
+
+[GenPCI_Service]
+DisplayName    = %GenPCI.SVCDESC%
+ServiceType    = 1                  ; SERVICE_KERNEL_DRIVER
+StartType      = 3                  ; SERVICE_DEMAND_START
+ErrorControl   = 1                  ; SERVICE_ERROR_NORMAL
+ServiceBinary  = %12%\pcidrv.sys
+
+;-------------------------------------------------------------------------
+; WDF Coinstaller installation
+;-------------------------------------------------------------------------
+[DestinationDirs]
+CoInstaller_CopyFiles = 11
+
+[GenPCI_Inst.NT.CoInstallers]
+AddReg         = CoInstaller_AddReg
+CopyFiles      = CoInstaller_CopyFiles
+
+[CoInstaller_CopyFiles]
+WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll
+
+[SourceDisksFiles]
+WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll = 1 ; make sure the number matches with SourceDisksNames
+
+[CoInstaller_AddReg]
+HKR,,CoInstallers32,0x00010000, "WdfCoInstaller$KMDFCOINSTALLERVERSION$.dll,WdfCoInstaller"
+
+[GenPCI_Inst.NT.Wdf]
+KmdfService    = GenPCI, GenPCI_wdfsect
+
+[GenPCI_wdfsect]
+KmdfLibraryVersion = $KMDFVERSION$
+
+;------------------------------------------------------------------------------
+;  String Definitions
+;------------------------------------------------------------------------------
+
+[Strings]
+MSFT           = "vkorehov"
+ClassName      = "CNC"
+GenPCI.SVCDESC = "CNC PCI Device Driver Service for Intel 8255x Ethernet Controller"
+GenPCI.DRVDESC = "CNC PCI Driver for Intel 8255x Ethernet Controller"
+DISK_NAME      = "CNC PCI Install Disk"
+
